@@ -1,0 +1,15 @@
+{
+  "name": "npm-workspace-nomorepo-prisma",
+  "version": "1.0.0",
+  "description": "https://zenn.dev/greenspot/articles/021e5eda2057a6",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "workspaces": [
+    "packages/database"
+  ]
+}
