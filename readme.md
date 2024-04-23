@@ -169,3 +169,35 @@ $ node apps/app1/index.js
 ]
 ```
 
+## その他のアプリケーションを追加する
+ワークスペースからのPrismaClientのインポートについては、上記で見たように、階層を特に気にせずに読み込むことができます。
+```
+import { PrismaClient } from "@prisma/client"
+```
+
+### npm create vite
+各種フレームワークをセットアップする場合、Viteなどのツールを使うかと思います。
+```
+$ npm -w apps/app2 init -y
+$ npm -w apps/app2 create vite@latest
+✔ Project name: … .
+...
+```
+この時Project nameを指定すると、ワークスペース下にもう一つ階層ができてしまうので、.と入力しましょう。npm createコマンド時に指定することもできます。
+```
+$ npm -w apps/app2 create vite@latest .
+```
+
+
+## npm init以外のワークスペースの追加方法
+開発中に、特定のディレクトリをワークスペースとして追加したい場合は、ルートのpackage.jsonを編集する必要があります。workspaces配列にパスを追加しましょう。
+
+package.json
+```
+{
+  ...
+  "workspaces": [
+    "apps/app1"
+  ]
+}
+```

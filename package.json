@@ -11,7 +11,8 @@
   "license": "ISC",
   "workspaces": [
     "packages/database",
-    "apps/app1"
+    "apps/app1",
+    "apps/app2"
   ],
   "devDependencies": {
     "@types/node": "^20.12.7",
