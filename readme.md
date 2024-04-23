@@ -41,4 +41,47 @@ $ npx -w database prisma init
 - `packages/database/.env`
 - `packages/database/prisma/schema.prisma`
 
+### スキーマの記述
+SQLite3のデータベースを用意する
 
+ [packages/database/.env] 
+```
+DATABASE_URL="file:/path/to/database.sqlite"
+```
+
+[packages/database/prisma/schema.prisma]
+```
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Record {
+  id      Int    @id @default(autoincrement())
+  title   String
+  content String
+}
+```
+
+### マイグレーションとPrismaClientの生成
+```
+$ npx -w database prisma migrate dev
+```
+マイグレーションが不要な場合はこちら
+```
+$ npx -w database prisma generate
+```
+
+### テストデータの用意
+Prismaには、Prisma Studioという簡易的なビジュアルエディタがあるので、簡単にテストデータの追加・削除を行うことができます。
+```
+$ npx -w database prisma studio
+```
+これでdatabaseパッケージの準備が整いました。実際にアプリケーションからPrismaClientをインポートして使ってみましょう。
+
+
+## 
