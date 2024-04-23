@@ -1,5 +1,5 @@
 # npmのworkspaceでモノレポ化しつつ、prismaの型・スキーマを共有する構成
-https://zenn.dev/greenspot/articles/021e5eda2057a6
+https://zenn.dev/greenspot/articles/021e5eda2057a6 の写経
 
 ## 主な構成
 app1は、frontend, backendなどと置き換えてもらって構いません。
@@ -83,5 +83,89 @@ $ npx -w database prisma studio
 ```
 これでdatabaseパッケージの準備が整いました。実際にアプリケーションからPrismaClientをインポートして使ってみましょう。
 
+または、マイグレーションの内容を変更して再適用する
+migration_sql
+```
+-- CreateTable
+CREATE TABLE "Record" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "title" TEXT NOT NULL,
+    "content" TEXT NOT NULL
+);
 
-## 
+INSERT INTO "Record"
+(
+    id,
+    title,
+    content
+)
+VALUES
+(
+    1,
+    'テスト1',
+    'テスト1内容'
+),
+(
+    2,
+    'テスト2',
+    'テスト2内容'
+)
+;
+```
+そして再適用
+```
+npx -w database prisma migrate dev
+```
+
+
+## アプリケーションでPrismaを使う
+### TypeScriptの初期設定
+※TypeScriptに対応したセットアップツールを使い、ワークスペース単位で対応する場合はこの作業は必要ありません。
+
+TypeScriptはモノレポ全体で共通の設定で使いたいため、各ワークスペースではなくプロジェクト自体に設定します。`tsconfig.json`については、適宜変更してください。
+```
+$ npm i -D @types/node ts-node typescript
+$ npx tsc --init
+```
+※ワークスペースごとにTypeScriptを設定したい場合は、これまでと同様に`-w`オプションを使います。
+```
+$ npm -w app1 i -D @types/node ts-node typescript
+$ npx -w app1 tsc --init
+```
+
+### ワークスペースの作成
+```
+$ npm -w apps/app1 init -y
+```
+
+### 実際にPrismaClientを使ってみる
+作成したワークスペースapps/app1に、テスト用のスクリプトを用意します。
+
+apps/app1/index.ts
+```
+import { PrismaClient } from "@prisma/client"
+
+main()
+
+async function main() {
+  const prisma = new PrismaClient()
+  const records = await prisma.record.findMany({})
+  console.log(records)
+}
+```
+
+### コンパイル
+下記を実行し、apps/app1/index.jsが生成されたら成功です。
+```
+$ npx -w app1 tsc
+```
+### 実行
+生成されたファイルを実行し、Prisma Studioで入力したテストデータが表示されたら成功です。
+```
+$ node apps/app1/index.js 
+[
+  { id: 1, title: 'テスト1', content: 'テスト1内容' },
+  { id: 2, title: 'テスト2', content: 'テスト1内容' }
+]
+```
+
