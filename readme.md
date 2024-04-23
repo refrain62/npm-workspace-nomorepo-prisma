@@ -187,7 +187,10 @@ $ npm -w apps/app2 create vite@latest
 ```
 $ npm -w apps/app2 create vite@latest .
 ```
-
+アプリを起動する
+```
+$  npm -w apps/app2 run dev
+```
 
 ## npm init以外のワークスペースの追加方法
 開発中に、特定のディレクトリをワークスペースとして追加したい場合は、ルートのpackage.jsonを編集する必要があります。workspaces配列にパスを追加しましょう。
